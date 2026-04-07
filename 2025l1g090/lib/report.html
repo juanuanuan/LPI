@@ -1,0 +1,662 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<title>HLint Report</title>
+<script type='text/javascript'>
+
+/* == Algorithm for show/unshow ==
+   Each hint/file is given a number, hint# or file#
+   When we say showOnly with a class name we add the rules to
+   the css #content div {display:none}, #content div.className {display:block}
+   When going back to showAll we remove these results
+*/
+
+// CSS MANIPULATION //
+
+function deleteRules(n)
+{
+    var css = document.styleSheets[0];
+    for (var i = 0; i < n; i++)
+        css.deleteRule(css.cssRules.length-1);
+}
+
+function insertRule(s)
+{
+    var css = document.styleSheets[0];
+    css.insertRule(s, css.cssRules.length);
+}
+
+// SHOW/HIDE LOGIC //
+
+/**
+ * @param {bool} [initialise=false] - Used to signal we are loading the page, so
+ the current location doesn't match our presumed state.
+ */
+function show(id, initialise=false)
+{
+    var last;
+    if (initialise)
+    {
+        last = "";
+    }
+    else
+    {
+        last = document.location.hash.slice(1);
+    }
+
+    if (id === last) return;
+    if (id.length === 0)
+    {
+        deleteRules(3);
+        insertRule(".all {font-weight: bold;}");
+    }
+    else
+    {
+        if (last.length === 0)
+        {
+            deleteRules(1);
+            insertRule("#content div {display:none;}");
+        }
+        else
+        {
+            deleteRules(2);
+        }
+        insertRule("#content div." + id + " {display:block;}");
+        insertRule("#" + id + "{font-weight:bold;}");
+    }
+
+    if (window.history)
+        history.replaceState("", document.title, window.location.pathname + window.location.search + (id === "" ? "" : "#" + id));
+    else
+        document.location.hash = '#'.concat(id);
+}
+
+</script>
+<style type="text/css">
+/* These rules are manipulated by the script.
+   The commented form is how it looks with an id selected */
+
+.all {font-weight: bold;}      /* #content div {display:none;} */
+                               /* #content div.id {display:block;} */
+                               /* #id {font-weight: bold;} */
+
+</style>
+<style type="text/css">
+/* See http://www.webreference.com/programming/css_frames/ */
+body {
+    margin:0;
+    border:0;
+    padding:0;
+    height:100%;
+    max-height:100%;
+    font-family: sans-serif;
+    font-size:76%;
+    overflow: hidden;
+}
+
+#leftbar {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width: 215px;
+    bottom: 0px;
+    overflow:auto;
+    background:rgb(202,223,255);
+    margin: 10px;
+    padding-top: 0;
+    padding-left: 7px;
+    padding-right: 7px;
+    border-radius: 5px;
+
+    display:none; /* Override if script present */
+}
+
+#content {
+    position:absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    overflow:auto;
+    padding-bottom: 15px;
+    padding-right: 7px;
+
+    left:10px; /* Override if script present */
+}
+
+#leftbar ul {margin-top: 0px; padding-left: 15px;}
+#leftbar p {margin-bottom: 0px;}
+.note {color: gray; font-size: smaller;}
+
+pre {
+    font-family: "lucida console", monospace;
+    padding-left: 15px;
+    margin: 2px;
+}
+
+#content div {
+    margin-bottom: 10px;
+    margin-right: 10px;
+    padding-top: 4px;
+    border-top: 1px solid #ccc;
+}
+
+.script #content {left:250px;}
+.script #leftbar {display: block;}
+
+/* From HsColour */
+.hs-keyglyph, .hs-layout {color: red;}
+.hs-keyword {color: blue;}
+.hs-comment, .hs-comment a {color: green;}
+.hs-str, .hs-chr {color: teal;}
+</style>
+</head>
+<body>
+
+<script type='text/javascript'>
+document.body.className = "script";
+</script>
+
+<div id="leftbar" valign="top" style="min-width:200px">
+
+<p><a class="all" href="javascript:show('')">All hints</a></p>
+<ul>
+<li><a id="hint0" href="javascript:show('hint0')">Error: Parse error: on input `let&#39; (1)</a></li>
+<li><a id="hint1" href="javascript:show('hint1')">Warning: Eta reduce (3)</a></li>
+<li><a id="hint2" href="javascript:show('hint2')">Warning: Redundant $! (1)</a></li>
+<li><a id="hint3" href="javascript:show('hint3')">Warning: Redundant if (1)</a></li>
+<li><a id="hint4" href="javascript:show('hint4')">Warning: Use fewer imports (1)</a></li>
+<li><a id="hint5" href="javascript:show('hint5')">Warning: Use fmap (12)</a></li>
+<li><a id="hint6" href="javascript:show('hint6')">Suggestion: Redundant $ (1)</a></li>
+<li><a id="hint7" href="javascript:show('hint7')">Suggestion: Use foldl (1)</a></li>
+<li><a id="hint8" href="javascript:show('hint8')">Suggestion: Use if (5)</a></li>
+<li><a id="hint9" href="javascript:show('hint9')">Suggestion: Use lambda-case (7)</a></li>
+<li><a id="hint10" href="javascript:show('hint10')">Suggestion: Use zipWith (2)</a></li>
+</ul>
+
+<p><a class="all" href="javascript:show('')">All files</a></p>
+<ul>
+<li><a id="file0" href="javascript:show('file0')">./2025l1g090/lib/Tarefa3.hs (2)</a></li>
+<li><a id="file1" href="javascript:show('file1')">./2025l1g090/test/Magic.hs (25)</a></li>
+<li><a id="file2" href="javascript:show('file2')">./Labs2025.hs (1)</a></li>
+<li><a id="file3" href="javascript:show('file3')">./Tarefa0_2025.hs (1)</a></li>
+<li><a id="file4" href="javascript:show('file4')">./Tarefa0_geral.hs (2)</a></li>
+<li><a id="file5" href="javascript:show('file5')">./Tarefa1.hs (2)</a></li>
+<li><a id="file6" href="javascript:show('file6')">./Tarefa2.hs (1)</a></li>
+<li><a id="file7" href="javascript:show('file7')">./Tarefa3.hs (1)</a></li>
+</ul>
+
+</div>
+<div id="content" valign="top" width="100%">
+<p>
+    Report generated by <a href="http://community.haskell.org/~ndm/hlint/">HLint</a>
+v3.8
+    - a tool to suggest improvements to your Haskell code.
+</p>
+
+<div class="hint4 file2">
+Labs2025.hs:28:1-20: Warning: Use fewer imports<br/>
+Found<br/>
+<pre><span class='hs-keyword'>import</span> <span class='hs-conid'>Tarefa0_geral</span>
+<span class='hs-keyword'>import</span> <span class='hs-conid'>Tarefa0_geral</span>
+</pre>
+Perhaps<br/>
+<pre><span class='hs-keyword'>import</span> <span class='hs-conid'>Tarefa0_geral</span>
+</pre>
+
+</div>
+
+<div class="hint3 file3">
+Tarefa0_2025.hs:130:25-84: Warning: Redundant if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>if</span> <span class='hs-varid'>terreno</span> <span class='hs-varop'>==</span> <span class='hs-conid'>Terra</span> <span class='hs-varop'>||</span> <span class='hs-varid'>terreno</span> <span class='hs-varop'>==</span> <span class='hs-conid'>Pedra</span> <span class='hs-keyword'>then</span> <span class='hs-conid'>True</span> <span class='hs-keyword'>else</span> <span class='hs-conid'>False</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>terreno</span> <span class='hs-varop'>==</span> <span class='hs-conid'>Terra</span> <span class='hs-varop'>||</span> <span class='hs-varid'>terreno</span> <span class='hs-varop'>==</span> <span class='hs-conid'>Pedra</span></pre>
+
+</div>
+
+<div class="hint7 file4">
+Tarefa0_geral.hs:(118,1)-(119,85): Suggestion: Use foldl<br/>
+Found<br/>
+<pre><span class='hs-definition'>moveDirecoesPosicao</span> <span class='hs-conid'>[]</span> <span class='hs-varid'>pos</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>pos</span>
+<span class='hs-definition'>moveDirecoesPosicao</span> <span class='hs-layout'>(</span><span class='hs-varid'>dir</span> <span class='hs-conop'>:</span> <span class='hs-varid'>resto</span><span class='hs-layout'>)</span> <span class='hs-varid'>pos</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>moveDirecoesPosicao</span> <span class='hs-varid'>resto</span> <span class='hs-layout'>(</span><span class='hs-varid'>movePosicao</span> <span class='hs-varid'>dir</span> <span class='hs-varid'>pos</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>moveDirecoesPosicao</span> <span class='hs-varid'>resto</span> <span class='hs-varid'>pos</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>foldl</span> <span class='hs-layout'>(</span><span class='hs-varid'>flip</span> <span class='hs-varid'>movePosicao</span><span class='hs-layout'>)</span> <span class='hs-varid'>pos</span> <span class='hs-varid'>resto</span></pre>
+
+</div>
+
+<div class="hint1 file4">
+Tarefa0_geral.hs:123:1-65: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>moveDirecaoPosicoes</span> <span class='hs-varid'>dir</span> <span class='hs-varid'>posicoes</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>movePosicao</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span> <span class='hs-varid'>posicoes</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>moveDirecaoPosicoes</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>movePosicao</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span></pre>
+
+</div>
+
+<div class="hint1 file5">
+Tarefa1.hs:(64,1)-(65,63): Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>todasLinhasMesmoTamanho</span> <span class='hs-varid'>primeiraLinha</span> <span class='hs-varid'>linhas</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>all</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span> <span class='hs-varid'>linha</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>length</span> <span class='hs-varid'>linha</span> <span class='hs-varop'>==</span> <span class='hs-varid'>length</span> <span class='hs-varid'>primeiraLinha</span><span class='hs-layout'>)</span> <span class='hs-varid'>linhas</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>todasLinhasMesmoTamanho</span> <span class='hs-varid'>primeiraLinha</span>
+  <span class='hs-keyglyph'>=</span> <span class='hs-varid'>all</span> <span class='hs-layout'>(</span><span class='hs-keyglyph'>\</span> <span class='hs-varid'>linha</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>length</span> <span class='hs-varid'>linha</span> <span class='hs-varop'>==</span> <span class='hs-varid'>length</span> <span class='hs-varid'>primeiraLinha</span><span class='hs-layout'>)</span></pre>
+
+</div>
+
+<div class="hint9 file5">
+Tarefa1.hs:(211,10)-(213,18): Suggestion: Use lambda-case<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>obj</span>
+  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>obj</span> <span class='hs-keyword'>of</span>
+       <span class='hs-conid'>Barril</span> <span class='hs-varid'>p</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>p</span> <span class='hs-varop'>==</span> <span class='hs-varid'>pos</span>
+       <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>False</span></pre>
+Perhaps<br/>
+<pre><span class='hs-keyglyph'>\</span><span class='hs-keyword'>case</span>
+  <span class='hs-conid'>Barril</span> <span class='hs-varid'>p</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>p</span> <span class='hs-varop'>==</span> <span class='hs-varid'>pos</span>
+  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>False</span></pre>
+<span class='note'>Note: may require <tt>{-# LANGUAGE LambdaCase #-}</tt> adding to the top of the file</span>
+</div>
+
+<div class="hint9 file6">
+Tarefa2.hs:(83,10)-(85,18): Suggestion: Use lambda-case<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>obj</span>
+  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>obj</span> <span class='hs-keyword'>of</span>
+       <span class='hs-conid'>Barril</span> <span class='hs-varid'>p</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>p</span> <span class='hs-varop'>==</span> <span class='hs-varid'>pos</span>
+       <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>False</span></pre>
+Perhaps<br/>
+<pre><span class='hs-keyglyph'>\</span><span class='hs-keyword'>case</span>
+  <span class='hs-conid'>Barril</span> <span class='hs-varid'>p</span> <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>p</span> <span class='hs-varop'>==</span> <span class='hs-varid'>pos</span>
+  <span class='hs-keyword'>_</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>False</span></pre>
+<span class='note'>Note: may require <tt>{-# LANGUAGE LambdaCase #-}</tt> adding to the top of the file</span>
+</div>
+
+<div class="hint0 file7">
+Tarefa3.hs:175:5-7: Error: Parse error: on input `let&#39;<br/>
+Found<br/>
+<pre>  <span class='hs-comment'>-- | Calcula danos de uma explosão</span>
+  <span class='hs-varid'>explosao</span> <span class='hs-keyglyph'>::</span> <span class='hs-conid'>Posicao</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Int</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-conid'>Danos</span> 
+<span class='hs-varop'>&gt;</span>     <span class='hs-keyword'>let</span> <span class='hs-varid'>raio</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>diametro</span> <span class='hs-varop'>`div`</span> <span class='hs-num'>2</span>
+          <span class='hs-varid'>todasPos</span> <span class='hs-keyglyph'>=</span> <span class='hs-keyglyph'>[</span><span class='hs-layout'>(</span><span class='hs-varid'>l</span> <span class='hs-varop'>+</span> <span class='hs-varid'>dl</span><span class='hs-layout'>,</span> <span class='hs-varid'>c</span> <span class='hs-varop'>+</span> <span class='hs-varid'>dc</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>|</span> <span class='hs-varid'>dl</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-keyglyph'>[</span><span class='hs-comment'>-</span><span class='hs-varid'>raio</span><span class='hs-keyglyph'>..</span><span class='hs-varid'>raio</span><span class='hs-keyglyph'>]</span><span class='hs-layout'>,</span> <span class='hs-varid'>dc</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-keyglyph'>[</span><span class='hs-comment'>-</span><span class='hs-varid'>raio</span><span class='hs-keyglyph'>..</span><span class='hs-varid'>raio</span><span class='hs-keyglyph'>]</span><span class='hs-layout'>,</span> <span class='hs-varid'>abs</span> <span class='hs-varid'>dl</span> <span class='hs-varop'>+</span> <span class='hs-varid'>abs</span> <span class='hs-varid'>dc</span> <span class='hs-varop'>&lt;=</span> <span class='hs-varid'>raio</span><span class='hs-keyglyph'>]</span>
+      <span class='hs-keyword'>in</span> <span class='hs-keyglyph'>[</span><span class='hs-layout'>(</span><span class='hs-varid'>pos</span><span class='hs-layout'>,</span> <span class='hs-varid'>danoNaPosicao</span> <span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-layout'>,</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span> <span class='hs-varid'>pos</span> <span class='hs-varid'>diametro</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>|</span> <span class='hs-varid'>pos</span> <span class='hs-keyglyph'>&lt;-</span> <span class='hs-varid'>todasPos</span><span class='hs-layout'>,</span> <span class='hs-varid'>danoNaPosicao</span> <span class='hs-layout'>(</span><span class='hs-varid'>l</span><span class='hs-layout'>,</span> <span class='hs-varid'>c</span><span class='hs-layout'>)</span> <span class='hs-varid'>pos</span> <span class='hs-varid'>diametro</span> <span class='hs-varop'>&gt;</span> <span class='hs-num'>0</span><span class='hs-keyglyph'>]</span>
+</pre>
+
+</div>
+
+<div class="hint10 file0">
+2025l1g090/lib/Tarefa3.hs:21:17-68: Suggestion: Use zipWith<br/>
+Found<br/>
+<pre><span class='hs-definition'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>uncurry</span> <span class='hs-varop'>$</span> <span class='hs-varid'>avancaMinhoca</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>zip</span> <span class='hs-keyglyph'>[</span><span class='hs-num'>0</span> <span class='hs-keyglyph'>..</span> <span class='hs-keyglyph'>]</span> <span class='hs-varid'>minhocas</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>zipWith</span> <span class='hs-layout'>(</span><span class='hs-varid'>curry</span> <span class='hs-layout'>(</span><span class='hs-varid'>uncurry</span> <span class='hs-varop'>$</span> <span class='hs-varid'>avancaMinhoca</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>[</span><span class='hs-num'>0</span> <span class='hs-keyglyph'>..</span> <span class='hs-keyglyph'>]</span> <span class='hs-varid'>minhocas</span></pre>
+
+</div>
+
+<div class="hint10 file0">
+2025l1g090/lib/Tarefa3.hs:22:44-93: Suggestion: Use zipWith<br/>
+Found<br/>
+<pre><span class='hs-definition'>map</span> <span class='hs-layout'>(</span><span class='hs-varid'>uncurry</span> <span class='hs-varop'>$</span> <span class='hs-varid'>avancaObjeto</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span> <span class='hs-layout'>(</span><span class='hs-varid'>zip</span> <span class='hs-keyglyph'>[</span><span class='hs-num'>0</span> <span class='hs-keyglyph'>..</span> <span class='hs-keyglyph'>]</span> <span class='hs-varid'>objetos</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>zipWith</span> <span class='hs-layout'>(</span><span class='hs-varid'>curry</span> <span class='hs-layout'>(</span><span class='hs-varid'>uncurry</span> <span class='hs-varop'>$</span> <span class='hs-varid'>avancaObjeto</span> <span class='hs-varid'>e</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span> <span class='hs-keyglyph'>[</span><span class='hs-num'>0</span> <span class='hs-keyglyph'>..</span> <span class='hs-keyglyph'>]</span> <span class='hs-varid'>objetos</span></pre>
+
+</div>
+
+<div class="hint2 file1">
+2025l1g090/test/Magic.hs:69:32-47: Warning: Redundant $!<br/>
+Found<br/>
+<pre><span class='hs-definition'>force</span> <span class='hs-varop'>$!</span> <span class='hs-conid'>Right</span> <span class='hs-varid'>a</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>force</span> <span class='hs-layout'>(</span><span class='hs-conid'>Right</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span></pre>
+
+</div>
+
+<div class="hint6 file1">
+2025l1g090/test/Magic.hs:83:14: Suggestion: Redundant $<br/>
+Found<br/>
+<pre><span class='hs-definition'>putStrLn</span> <span class='hs-varop'>$</span> <span class='hs-str'>"* Página de feedback aberta no browser."</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>putStrLn</span> <span class='hs-str'>"* Página de feedback aberta no browser."</span></pre>
+
+</div>
+
+<div class="hint1 file1">
+2025l1g090/test/Magic.hs:108:5-23: Warning: Eta reduce<br/>
+Found<br/>
+<pre><span class='hs-definition'>encode</span> <span class='hs-varid'>b</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>putBit</span> <span class='hs-varid'>b</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>encode</span> <span class='hs-keyglyph'>=</span> <span class='hs-varid'>putBit</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:121:14-18: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:125:14-18: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint9 file1">
+2025l1g090/test/Magic.hs:(138,25)-(140,34): Suggestion: Use lambda-case<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>b</span>
+  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+       <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>liftM</span> <span class='hs-conid'>Left</span> <span class='hs-varid'>decode</span>
+       <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>liftM</span> <span class='hs-conid'>Right</span> <span class='hs-varid'>decode</span></pre>
+Perhaps<br/>
+<pre><span class='hs-keyglyph'>\</span><span class='hs-keyword'>case</span>
+  <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>liftM</span> <span class='hs-conid'>Left</span> <span class='hs-varid'>decode</span>
+  <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>liftM</span> <span class='hs-conid'>Right</span> <span class='hs-varid'>decode</span></pre>
+<span class='note'>Note: may require <tt>{-# LANGUAGE LambdaCase #-}</tt> adding to the top of the file</span>
+</div>
+
+<div class="hint8 file1">
+2025l1g090/test/Magic.hs:(138,31)-(140,34): Suggestion: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+  <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>liftM</span> <span class='hs-conid'>Left</span> <span class='hs-varid'>decode</span>
+  <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>liftM</span> <span class='hs-conid'>Right</span> <span class='hs-varid'>decode</span></pre>
+Perhaps<br/>
+<pre><span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>liftM</span> <span class='hs-conid'>Right</span> <span class='hs-varid'>decode</span> <span class='hs-keyword'>else</span> <span class='hs-varid'>liftM</span> <span class='hs-conid'>Left</span> <span class='hs-varid'>decode</span><span class='hs-layout'>)</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:139:18-22: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:140:17-21: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint9 file1">
+2025l1g090/test/Magic.hs:(145,25)-(147,48): Suggestion: Use lambda-case<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>b</span>
+  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+       <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span>
+       <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Just</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-keyglyph'>\</span><span class='hs-keyword'>case</span>
+  <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span>
+  <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Just</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span></pre>
+<span class='note'>Note: may require <tt>{-# LANGUAGE LambdaCase #-}</tt> adding to the top of the file</span>
+</div>
+
+<div class="hint8 file1">
+2025l1g090/test/Magic.hs:(145,31)-(147,48): Suggestion: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+  <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span>
+  <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Just</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>a</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Just</span> <span class='hs-varid'>a</span><span class='hs-layout'>)</span> <span class='hs-keyword'>else</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Nothing</span><span class='hs-layout'>)</span></pre>
+
+</div>
+
+<div class="hint9 file1">
+2025l1g090/test/Magic.hs:(160,25)-(162,52): Suggestion: Use lambda-case<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>b</span>
+  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+       <span class='hs-conid'>False</span>
+         <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+              <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>arma</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Dispara</span> <span class='hs-varid'>arma</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span>
+       <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Move</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-keyglyph'>\</span><span class='hs-keyword'>case</span>
+  <span class='hs-conid'>False</span>
+    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+         <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>arma</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Dispara</span> <span class='hs-varid'>arma</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span>
+  <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Move</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span></pre>
+<span class='note'>Note: may require <tt>{-# LANGUAGE LambdaCase #-}</tt> adding to the top of the file</span>
+</div>
+
+<div class="hint8 file1">
+2025l1g090/test/Magic.hs:(160,31)-(162,52): Suggestion: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+  <span class='hs-conid'>False</span>
+    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+         <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>arma</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Dispara</span> <span class='hs-varid'>arma</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span>
+  <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Move</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>then</span>
+     <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Move</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span>
+ <span class='hs-keyword'>else</span>
+     <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>arma</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Dispara</span> <span class='hs-varid'>arma</span> <span class='hs-varid'>dir</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span></pre>
+
+</div>
+
+<div class="hint9 file1">
+2025l1g090/test/Magic.hs:(167,25)-(169,163): Suggestion: Use lambda-case<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>b</span>
+  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+       <span class='hs-conid'>False</span>
+         <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+              <span class='hs-varop'>&gt;&gt;=</span>
+                <span class='hs-keyglyph'>\</span> <span class='hs-varid'>posicao</span>
+                  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>explode</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Barril</span> <span class='hs-varid'>posicao</span> <span class='hs-varid'>explode</span><span class='hs-layout'>)</span>
+       <span class='hs-conid'>True</span>
+         <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+              <span class='hs-varop'>&gt;&gt;=</span>
+                <span class='hs-keyglyph'>\</span> <span class='hs-varid'>posicao</span>
+                  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                       <span class='hs-varop'>&gt;&gt;=</span>
+                         <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span>
+                           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                <span class='hs-varop'>&gt;&gt;=</span>
+                                  <span class='hs-keyglyph'>\</span> <span class='hs-varid'>tipo</span>
+                                    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                         <span class='hs-varop'>&gt;&gt;=</span>
+                                           <span class='hs-keyglyph'>\</span> <span class='hs-varid'>tempo</span>
+                                             <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                                  <span class='hs-varop'>&gt;&gt;=</span>
+                                                    <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dono</span>
+                                                      <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span>
+                                                           <span class='hs-layout'>(</span><span class='hs-conid'>Disparo</span> <span class='hs-varid'>posicao</span> <span class='hs-varid'>dir</span> <span class='hs-varid'>tipo</span> <span class='hs-varid'>tempo</span> <span class='hs-varid'>dono</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-keyglyph'>\</span><span class='hs-keyword'>case</span>
+  <span class='hs-conid'>False</span>
+    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+         <span class='hs-varop'>&gt;&gt;=</span>
+           <span class='hs-keyglyph'>\</span> <span class='hs-varid'>posicao</span>
+             <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>explode</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Barril</span> <span class='hs-varid'>posicao</span> <span class='hs-varid'>explode</span><span class='hs-layout'>)</span>
+  <span class='hs-conid'>True</span>
+    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+         <span class='hs-varop'>&gt;&gt;=</span>
+           <span class='hs-keyglyph'>\</span> <span class='hs-varid'>posicao</span>
+             <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                  <span class='hs-varop'>&gt;&gt;=</span>
+                    <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span>
+                      <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                           <span class='hs-varop'>&gt;&gt;=</span>
+                             <span class='hs-keyglyph'>\</span> <span class='hs-varid'>tipo</span>
+                               <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                    <span class='hs-varop'>&gt;&gt;=</span>
+                                      <span class='hs-keyglyph'>\</span> <span class='hs-varid'>tempo</span>
+                                        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                             <span class='hs-varop'>&gt;&gt;=</span>
+                                               <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dono</span>
+                                                 <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Disparo</span> <span class='hs-varid'>posicao</span> <span class='hs-varid'>dir</span> <span class='hs-varid'>tipo</span> <span class='hs-varid'>tempo</span> <span class='hs-varid'>dono</span><span class='hs-layout'>)</span></pre>
+<span class='note'>Note: may require <tt>{-# LANGUAGE LambdaCase #-}</tt> adding to the top of the file</span>
+</div>
+
+<div class="hint8 file1">
+2025l1g090/test/Magic.hs:(167,31)-(169,163): Suggestion: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+  <span class='hs-conid'>False</span>
+    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+         <span class='hs-varop'>&gt;&gt;=</span>
+           <span class='hs-keyglyph'>\</span> <span class='hs-varid'>posicao</span>
+             <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>explode</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Barril</span> <span class='hs-varid'>posicao</span> <span class='hs-varid'>explode</span><span class='hs-layout'>)</span>
+  <span class='hs-conid'>True</span>
+    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+         <span class='hs-varop'>&gt;&gt;=</span>
+           <span class='hs-keyglyph'>\</span> <span class='hs-varid'>posicao</span>
+             <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                  <span class='hs-varop'>&gt;&gt;=</span>
+                    <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span>
+                      <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                           <span class='hs-varop'>&gt;&gt;=</span>
+                             <span class='hs-keyglyph'>\</span> <span class='hs-varid'>tipo</span>
+                               <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                    <span class='hs-varop'>&gt;&gt;=</span>
+                                      <span class='hs-keyglyph'>\</span> <span class='hs-varid'>tempo</span>
+                                        <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                             <span class='hs-varop'>&gt;&gt;=</span>
+                                               <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dono</span>
+                                                 <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Disparo</span> <span class='hs-varid'>posicao</span> <span class='hs-varid'>dir</span> <span class='hs-varid'>tipo</span> <span class='hs-varid'>tempo</span> <span class='hs-varid'>dono</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>then</span>
+     <span class='hs-varid'>decode</span>
+       <span class='hs-varop'>&gt;&gt;=</span>
+         <span class='hs-keyglyph'>\</span> <span class='hs-varid'>posicao</span>
+           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                <span class='hs-varop'>&gt;&gt;=</span>
+                  <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dir</span>
+                    <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                         <span class='hs-varop'>&gt;&gt;=</span>
+                           <span class='hs-keyglyph'>\</span> <span class='hs-varid'>tipo</span>
+                             <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                  <span class='hs-varop'>&gt;&gt;=</span>
+                                    <span class='hs-keyglyph'>\</span> <span class='hs-varid'>tempo</span>
+                                      <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span>
+                                           <span class='hs-varop'>&gt;&gt;=</span>
+                                             <span class='hs-keyglyph'>\</span> <span class='hs-varid'>dono</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Disparo</span> <span class='hs-varid'>posicao</span> <span class='hs-varid'>dir</span> <span class='hs-varid'>tipo</span> <span class='hs-varid'>tempo</span> <span class='hs-varid'>dono</span><span class='hs-layout'>)</span>
+ <span class='hs-keyword'>else</span>
+     <span class='hs-varid'>decode</span>
+       <span class='hs-varop'>&gt;&gt;=</span>
+         <span class='hs-keyglyph'>\</span> <span class='hs-varid'>posicao</span>
+           <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>explode</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Barril</span> <span class='hs-varid'>posicao</span> <span class='hs-varid'>explode</span><span class='hs-layout'>)</span><span class='hs-layout'>)</span></pre>
+
+</div>
+
+<div class="hint9 file1">
+2025l1g090/test/Magic.hs:(178,25)-(180,48): Suggestion: Use lambda-case<br/>
+Found<br/>
+<pre><span class='hs-keyglyph'>\</span> <span class='hs-varid'>b</span>
+  <span class='hs-keyglyph'>-&gt;</span> <span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+       <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Morta</span>
+       <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Viva</span> <span class='hs-varid'>i</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-keyglyph'>\</span><span class='hs-keyword'>case</span>
+  <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Morta</span>
+  <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Viva</span> <span class='hs-varid'>i</span><span class='hs-layout'>)</span></pre>
+<span class='note'>Note: may require <tt>{-# LANGUAGE LambdaCase #-}</tt> adding to the top of the file</span>
+</div>
+
+<div class="hint8 file1">
+2025l1g090/test/Magic.hs:(178,31)-(180,48): Suggestion: Use if<br/>
+Found<br/>
+<pre><span class='hs-keyword'>case</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>of</span>
+  <span class='hs-conid'>False</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Morta</span>
+  <span class='hs-conid'>True</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Viva</span> <span class='hs-varid'>i</span><span class='hs-layout'>)</span></pre>
+Perhaps<br/>
+<pre><span class='hs-layout'>(</span><span class='hs-keyword'>if</span> <span class='hs-varid'>b</span> <span class='hs-keyword'>then</span> <span class='hs-varid'>decode</span> <span class='hs-varop'>&gt;&gt;=</span> <span class='hs-keyglyph'>\</span> <span class='hs-varid'>i</span> <span class='hs-keyglyph'>-&gt;</span> <span class='hs-varid'>return</span> <span class='hs-layout'>(</span><span class='hs-conid'>Viva</span> <span class='hs-varid'>i</span><span class='hs-layout'>)</span> <span class='hs-keyword'>else</span> <span class='hs-varid'>return</span> <span class='hs-conid'>Morta</span><span class='hs-layout'>)</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:184:14-18: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:188:14-18: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:192:14-18: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:210:17-21: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:216:17-21: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:222:17-21: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:228:18-22: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+<div class="hint5 file1">
+2025l1g090/test/Magic.hs:242:17-21: Warning: Use fmap<br/>
+Found<br/>
+<pre><span class='hs-definition'>liftM</span></pre>
+Perhaps<br/>
+<pre><span class='hs-definition'>fmap</span></pre>
+
+</div>
+
+</div>
+<script type='text/javascript'>
+show(window.location.hash.slice(1), true);
+</script>
+</body>
+</html>
