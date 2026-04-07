@@ -152,3 +152,5 @@ dataTarefa1 = do
 
 main :: IO ()
 main = runFeedback =<< dataTarefa1
+
+
